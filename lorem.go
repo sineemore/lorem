@@ -41,8 +41,8 @@ func NewLorem() io.Reader {
 	return &loremReader{}
 }
 
-// NewLoremN returns io.LimitedReader that reads from Lorem reader.
-func NewLoremN(n int) io.LimitedReader {
+// NewLoremN reads n bytes of Lorem sequence and returns EOF.
+func NewLoremN(n int) io.Reader {
 	return io.LimitReader(NewLorem(), int64(n))
 }
 
