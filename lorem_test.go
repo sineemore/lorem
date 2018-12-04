@@ -39,6 +39,6 @@ func TestSomeMerolIsNotALorem(t *T) {
 	r := strings.NewReader(strings.Repeat(merol, 3))
 
 	if IsLoremReader(r) {
-		t.Error(errors.New("Morel must not be lorem"))
+		t.Error(errors.New("Merol must not be lorem"))
 	}
 }
