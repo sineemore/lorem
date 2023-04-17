@@ -48,39 +48,43 @@ func NewLoremN(n int) io.Reader {
 
 // Tests if provided buf holds a valid sequence of Lorem.
 func IsLorem(buf []byte) bool {
-	return IsLoremReader(bytes.NewReader(buf))
+	ok, _ := IsLoremReader(bytes.NewReader(buf))
+	return ok
 }
 
 // IsLoremReader reads from r until io.EOF and tests if data
 // is a valid sequence of Lorems. On error false is returned.
-func IsLoremReader(r io.Reader) bool {
+func IsLoremReader(r io.Reader) (bool, error) {
 	var err error
 	buf := make([]byte, len(Lorem))
 	pos := 0
 	for {
 		var n int
 		n, err = r.Read(buf)
+		if err != nil && !errors.Is(err, io.EOF) {
+			return false, err
+		}
+
 		b := buf[:n]
 
 		for len(b) > 0 {
-
 			length := len(Lorem) - pos
 			if length > len(b) {
 				length = len(b)
 			}
 
 			if string(b[:length]) != Lorem[pos:pos+length] {
-				return false
+				return false, nil
 			}
 
 			pos = (pos + length) % len(Lorem)
 			b = b[length:]
 		}
 
-		if err != nil {
-			break
+		if errors.Is(err, io.EOF) {
+			return true, nil
 		}
 	}
 
-	return err == io.EOF
+	return true, nil
 }

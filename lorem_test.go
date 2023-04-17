@@ -25,7 +25,11 @@ func TestOneLoremIsLorem(t *T) {
 }
 
 func TestSomeLoremIsLorem(t *T) {
-	if !IsLoremReader(NewLoremN(3141592)) {
+	ok, err := IsLoremReader(NewLoremN(3141592))
+	if err != nil {
+		t.Error("unexpected error", err)
+	}
+	if !ok {
 		t.Error(ErrNotALorem)
 	}
 }
@@ -38,7 +42,11 @@ func TestSomeMerolIsNotALorem(t *T) {
 
 	r := strings.NewReader(strings.Repeat(merol, 3))
 
-	if IsLoremReader(r) {
+	ok, err := IsLoremReader(r)
+	if err != nil {
+		t.Error("unexpected error", err)
+	}
+	if ok {
 		t.Error(errors.New("Merol must not be lorem"))
 	}
 }
